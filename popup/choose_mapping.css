@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+
+:root {
+  --border-color: #e3e5e4;
+  --background-color: #c3c7ca;
+  --text-color: #34444f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #fff;
+  font-family: 'Lato', sans-serif;
+}
+
+.popup-header {
+  background-color: #e3e5e4;
+  border: medium solid #c5c5c5;
+  font-size: x-large;
+  font-weight: 600;
+  text-align: center;
+}
+
+.view-header {
+  background-color: #e3e5e4;
+  border: medium solid #c5c5c5;
+  margin-top: 1%;
+  font-size: large;
+  font-weight: 500;
+}
+
+button {
+  border: none;
+  border-left: thick solid #3ae374;
+  border-right: thick solid #3ae374;
+  border-radius: 5px;
+  width: 100%;
+  margin: 1% auto;
+  padding: 4px;
+  text-align: center;
+  font-size: 1.5em;
+  cursor: pointer;
+  background-color: #e5f2f2;
+}
+
+button:hover {
+  background-color: #cff2f2;
+}
+
+button[type="reset"] {
+  background-color: #fbfbc9;
+}
+
+button[type="reset"]:hover {
+  background-color: #eaea9d;
+}
+
+.hidden {
+  display: none;
+}
+
+/* draggable-list container */
+.draggable-list {
+  height: 200px;
+  overflow: auto;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 0;
+  list-style-type: none;
+}
+
+/* more specific style for list items in the draggable-list */
+.draggable-list li {
+  background-color: #fff;
+  display: flex;
+  flex: 1;
+}
+
+/* middle of the list items have bottom borders */
+.draggable-list li:not(:last-of-type) {
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* darken list items when you hover them? */
+.draggable-list li.over .draggable {
+  background-color: #eaeaea;
+}
+
+/* style for anything that's draggable */
+.draggable {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  flex: 1;
+}
+
+/* applied while draggables are being dragged */
+.draggable.dragging {
+  opacity: 0.4
+}
+
+/* for rows in select-mapping-view */
+.mapping-row-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.key-annotation-row-guide {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* for the input checkbox and its label */
+.key-annotation-row-left-side-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.row-icon-container {
+  display: flex;
+  align-items: center;
+}
+
+.edit-icon,
+.delete-icon,
+.grip-icon {
+  cursor: pointer;
+  margin-left: auto;
+  width: 16px;
+  height: 16px;
+  margin-right: 16px
+}
