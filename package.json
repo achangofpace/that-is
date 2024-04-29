@@ -1,0 +1,23 @@
+{
+  "name": "custom_rubi",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependecies": {
+    "eslint": "^8.48.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "author": "Gabriel Chang",
+  "license": "TBD",
+  "directories": {
+    "test": "tests"
+  },
+  "keywords": [],
+  "description": "",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

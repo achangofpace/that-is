@@ -1,0 +1,30 @@
+{
+	"manifest_version": 3,
+	"name": "Custom Rubi",
+	"version": "1.0",
+	"description": "Insert ruby-text above text on webpages based on user-created mappings.",
+	"homepage_url": "https://github.com/mdn/webextensions-examples/tree/main/beastify",
+	"icons": {
+		"48": "icons/custom_ruby_map.svg"
+	},
+	"permissions": [
+		"activeTab",
+		"downloads",
+		"scripting",
+		"storage"
+	],
+	"action": {
+		"default_icon": "icons/custom_ruby_map.svg",
+		"default_title": "Custom Rubi",
+		"default_popup": "popup/choose_mapping.html"
+	},
+	"background": {
+		"scripts": ["background_mapping_handler.js"],
+		"type": "module"
+	},
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "custom-rubi@gdd.com"
+		}
+	}
+}
