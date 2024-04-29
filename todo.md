@@ -9,9 +9,10 @@ with definitions, translations, or whatever else you can come up with.
     - [ ] Copy
     - [ ] Screenshots
 - [ ] Improve UI visuals
+- [ ] Put on github
 
 ### Backlog
-
+- [ ] Port to Chrome (probably nearly there)
 - [ ] Add tests
 - [ ] Fix content script imports
 - [ ] Create contribution guide
@@ -38,3 +39,6 @@ with definitions, translations, or whatever else you can come up with.
 
 - [✓] Completed task
 - [✓] Improve logo / name
+- [✓] Add license
+- [✓] Add readme
+- [✓] Add contributing guidelines
