@@ -7,9 +7,7 @@ with definitions, translations, or whatever else you can come up with.
 - [ ] Prepare for release
   - [ ] Store page
     - [ ] Copy
-    - [ ] Screenshots
 - [ ] Improve UI visuals
-- [ ] Put on github
 
 ### Backlog
 - [ ] Port to Chrome (probably nearly there)
@@ -42,3 +40,5 @@ with definitions, translations, or whatever else you can come up with.
 - [✓] Add license
 - [✓] Add readme
 - [✓] Add contributing guidelines
+- [✓] Put on github
+- [✓] Screenshots

@@ -1,4 +1,5 @@
 # Custom Ruby Contribution Guide
 Thanks for helping improve this project.
 
-### How to create a new View
+### Bug reporting
+Feel free to open an issue for now while I'm still setting things up.
