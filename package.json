@@ -1,5 +1,5 @@
 {
-  "name": "custom_rubi",
+  "name": "that-is",
   "version": "1.0.0",
   "main": "index.js",
   "devDependecies": {
@@ -11,7 +11,7 @@
     "lint:fix": "eslint . --fix"
   },
   "author": "Gabriel Chang",
-  "license": "TBD",
+  "license": "GPL-3.0-only",
   "directories": {
     "test": "tests"
   },

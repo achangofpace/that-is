@@ -90,7 +90,7 @@ function rubyWrap(node, regexs, consolidated_mapping) {
 					};
 					content = content.replace(
 						regex,
-						`<ruby data-custom-rubi-annotated='${JSON.stringify(annotation_tag)}' style="font-size: 1.5em;">${key}<rp>(</rp><rt style="font-size: 1em">${annotation}&nbsp;</rt><rp>)</rp></ruby>`
+						`<ruby data-ie-annotated='${JSON.stringify(annotation_tag)}' style="font-size: 1.5em;">${key}<rp>(</rp><rt style="font-size: 1em">${annotation}&nbsp;</rt><rp>)</rp></ruby>`
 					);
 				}
 			}
@@ -112,7 +112,7 @@ function rubyWrap(node, regexs, consolidated_mapping) {
 		// This node contains more than just text, call rubyWrap() on each
 		// of its children.
 		for (let i = 0; i < node.childNodes.length; i++) {
-			if (node.childNodes[i]?.dataset?.customRubiAnnotated) {
+			if (node.childNodes[i]?.dataset?.ieAnnotated) {
 				continue; // skip already annotated nodes
 			}
 			rubyWrap(node.childNodes[i], regexs, consolidated_mapping);
@@ -156,11 +156,11 @@ function isInsideRubyTag(content, key_match) {
  */
 function rubyUnwrap(node, regexs, consolidated_mapping, options) {
 	/* get list of ruby tags added by extension */
-	let custom_annotations_list = node.querySelectorAll('ruby[data-custom-rubi-annotated]');
+	let custom_annotations_list = node.querySelectorAll('ruby[data-ie-annotated]');
 	/* replace contents of the ruby tag with the key it was made with */
 	for (let i=0; i<custom_annotations_list.length; i++) {
 		let rubyTag = custom_annotations_list[i];
-		let plain_key = JSON.parse(rubyTag.dataset.customRubiAnnotated).key;
+		let plain_key = JSON.parse(rubyTag.dataset.ieAnnotated).key;
 		let to_replace = document.createTextNode(plain_key);
 		rubyTag.replaceWith(to_replace);
 	}
