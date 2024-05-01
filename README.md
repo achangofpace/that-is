@@ -8,6 +8,8 @@ For those who don't already know that __That Is__ is what helps you remember wha
 
 With this (i.e. __That Is__), you can create custom definitions for any text (e.g. words, symbols, phrases). When you come across a page containing the text you've defined before, you can annotate the defined text where it appears on the page to remind yourself about the text (i.e. what _that_ is).
 
+![firefox_apply_and_create_annotations.gif](/screenshots/firefox_apply_and_create_annotations.gif)
+
 Learning a new language? Having trouble recognizing new words or symbols?
 
 Dictionaries are too inconvenient and interrupt reading practice.
@@ -31,6 +33,8 @@ Use one of the built-in default mappings and edit it to fit your needs.
 ## Installation
 - Firefox
     - navigate to <a>about:debugging#/runtime/this-firefox</a> and click "Load Temporary Add-on..." and select the manifest.json from this project.
+
+   ![firefox_install_temporary_addon.gif](/screenshots/firefox_install_temporary_addon.gif)
 
     or
 
