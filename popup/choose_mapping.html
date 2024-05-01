@@ -1,0 +1,203 @@
+<!-- extension popup -->
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>That Is</title>
+		<link rel="stylesheet" href="../snackbar/js-snackbar.min.css" />
+		<link rel="stylesheet" href="choose_mapping.css" />
+	</head>
+	<body>
+		<div class="popup-header" id="header">That Is</div>
+		<div class="view-container">
+			<!-- SELECT MAPPING VIEW EXAMPLE -- >
+			<div id="mapping-select-view">
+				<div class="view-header">Select Mappings</div>
+				<div class="view-body">
+					<ol id="mapping-selection-draggable-list" class="mapping-selection-list draggable-list">
+						<!-- example <li> (generated in popup script) -- >
+						<li id="Katakana to romaji" class="draggable" draggable="true">
+							<div class="mapping-row-content">
+								<div class="row-left-side-content">
+									<label class="mapping-name">
+									<input class="mapping-toggle" type="checkbox">
+									Katakana to romaji
+									</label>
+								</div>
+								<div class="row-icon-container">
+									<img class="edit-icon" src="../icons/edit.svg" title="Edit this mapping">
+									<img class="delete-icon" src="../icons/delete.svg" title="Delete this mapping">
+									<img class="grip-icon" src="../icons/grip-horizontal-line-svgrepo-com.svg" title="This row is draggable!">
+								</div>
+							</div>
+						</li>
+						<li id="Greek alphabet to English names" class="draggable" draggable="true">
+							<div class="mapping-row-content">
+								<div class="row-left-side-content">
+									<label class="mapping-name">
+									<input class="mapping-toggle" type="checkbox">
+									Greek alphabet to English names
+									</label>
+								</div>
+								<div class="row-icon-container">
+									<img class="edit-icon" src="../icons/edit.svg" title="Edit this mapping">
+									<img class="delete-icon" src="../icons/delete.svg" title="Delete this mapping">
+									<img class="grip-icon" src="../icons/grip-horizontal-line-svgrepo-com.svg" title="This row is draggable!">
+								</div>
+							</div>
+						</li>
+					</ol>
+					<div class="button-area" id="select-mapping-view-buttons-area">
+						<button id="select-mapping-view-annotate-page-button" type="button">Apply Selected Mappings (Annotate Page)</button>
+						<button id="select-mapping-view-remove-annotations-button" type="button">Remove Annotations</button>
+						<button id="select-mapping-view-create-new-mapping-button" type="button">Create New Mapping</button>
+						<button id="select-mapping-view-save-mappings-priority-button" type="button" class="hidden">Save</button>
+					</div>
+				</div>
+			</div>
+			-->
+			<!-- CREATE MAPPING VIEW EXAMPLE -- >
+			<div id="create-new-mapping-view">
+				<div class="view-header">Create New Mapping</div>
+				<div class="create-view-body">
+					<div class="create-mapping-name-field">
+						<label>
+							New Mapping Name: &nbsp;
+							<input class="new-mapping-name-input" type="text" value="New Example Mapping">
+						</label>
+					</div>
+					<div class="new-mapping-description-field">
+						<label>
+							Description: &nbsp;
+							<input class="new-mapping-description-input" type="text" value="An example">
+						</label>
+					</div>
+					<ol class="draggable-list">
+						<li class="key-annotation-row-guide" draggable="false">
+							<div class="key-input-guide">Key</div>
+							<div class="annotation-input-guide">Annotation</div>
+						</li>
+						<li class="key-annotation-pair-list-row draggable" draggable="true">
+							<div class="mapping-row-content">
+								<div class="key-annotation-row-left-side-content">
+									<input class="mapping-key-input" type="text" value="key 1">
+									<input class="mapping-annotation-input" type="text" value="annotation 1">
+								</div>
+								<div class="row-icon-container">
+									<img class="delete-icon" src="../icons/delete.svg" title="Delete this row">
+									<img class="grip-icon" src="../icons/grip-horizontal-line-svgrepo-com.svg" title="Drag to reorder">
+								</div>
+							</div>
+						</li>
+						<li class="key-annotation-pair-list-row draggable" draggable="true">
+							<div class="mapping-row-content">
+								<div class="key-annotation-row-left-side-content">
+									<input class="mapping-key-input" type="text" value="key_2">
+									<input class="mapping-annotation-input" type="text" value="annotation_2">
+								</div>
+								<div class="row-icon-container">
+									<img class="delete-icon" src="../icons/delete.svg" title="Delete this row">
+									<img class="grip-icon" src="../icons/grip-horizontal-line-svgrepo-com.svg" title="Drag to reorder">
+								</div>
+							</div>
+						</li>
+					</ol>
+					<div class="button-area">
+						<button id="new-mapping-add-key-button" type="button">Add Key</button>
+						<button id="create-mapping-view-show-json-button" type="button">Show JSON</button>
+						<button id="save-new-mapping-button" type="submit">Save New Mapping</button>
+						<button id="cancel-new-mapping-button" type="reset">Abandon New Mapping</button>
+					</div>
+				</div>
+			</div>
+			-->
+			<!-- EDIT MAPPING VIEW EXAMPLE -- >
+			<div id="edit-mapping-view">
+				<div class="view-header">Edit Mapping: Mapping being edited</div>
+				<div class="edit-view-body">
+					<div class="edit-mapping-name-field">
+						<label>
+						Now Editing: &nbsp;
+						<input class="edit-mapping-name-input" type="text" value="Mapping being edited" readonly="readonly">
+						</label>
+					</div>
+					<div class="edit-mapping-description-field">
+						<label>
+						Description: &nbsp;
+						<input class="edit-mapping-description-input" type="text" value="Mapping being edited">
+						</label>
+					</div>
+					<ol class="draggable-list">
+						<!-- example <li> (generated in popup) -- >
+						<li class="key-annotation-row-guide" draggable="false">
+							<div class="key-input-guide">Key</div>
+							<div class="annotation-input-guide">Annotation</div>
+						</li>
+						<li class="key-annotation-pair-list-row draggable" draggable="true">
+							<div class="mapping-row-content">
+								<div class="key-annotation-row-left-side-content">
+									<input class="mapping-key-input" type="text" value="key1">
+									<input class="mapping-annotation-input" value="edited annotation" type="text">
+								</div>
+								<div class="row-icon-container">
+									<img class="delete-icon" src="../icons/delete.svg" title="Delete this row">
+									<img class="grip-icon" src="../icons/grip-horizontal-line-svgrepo-com.svg" title="Drag to reorder">
+								</div>
+							</div>
+						</li>
+						<li class="key-annotation-pair-list-row draggable" draggable="true">
+							<div class="mapping-row-content">
+								<div class="key-annotation-row-left-side-content">
+									<input class="mapping-key-input" value="edited key" type="text">
+									<input class="mapping-annotation-input" value="original annotation" type="text">
+								</div>
+								<div class="row-icon-container">
+									<img class="delete-icon" src="../icons/delete.svg" title="Delete this row">
+									<img class="grip-icon" src="../icons/grip-horizontal-line-svgrepo-com.svg" title="Drag to reorder">
+								</div>
+							</div>
+						</li>
+						<li class="key-annotation-pair-list-row draggable" draggable="true">
+							<div class="mapping-row-content">
+								<div class="key-annotation-row-left-side-content">
+									<input class="mapping-key-input" value="new key" type="text">
+									<input class="mapping-annotation-input" value="new annotation" type="text">
+								</div>
+								<div class="row-icon-container">
+									<img class="delete-icon" src="../icons/delete.svg" title="Delete this row">
+									<img class="grip-icon" src="../icons/grip-horizontal-line-svgrepo-com.svg" title="Drag to reorder">
+								</div>
+							</div>
+						</li>
+					</ol>
+					<div class="button-area">
+						<button id="edit-mapping-add-key-button" type="button">Add Key</button>
+						<button id="edit-mapping-view-show-json-button" type="button">Show JSON</button>
+						<button id="save-edit-mapping-button" type="submit">Save Mapping Edits</button>
+						<button id="cancel-edit-mapping-button" type="reset">Abandon Mapping Edits</button>
+					</div>
+				</div>
+			</div>
+			-->
+		</div>
+		<!-- SETTINGS VIEW WIP -->
+		<div id="settings-view" class="hidden">
+			<div class="view-header" id="settings-view-header">Settings</div>
+			<div id="settings-view-body">
+				<div id="settings-autosave">
+					<input id="settings-autosave-toggle" type="checkbox"></input>
+					<label for="settings-autosave-toggle">Autosave</label>
+				</div>
+			</div>
+		</div>
+		<!-- import mappings from file idk yet where this goes -->
+		<div id="import-mappings-from-file" class="hidden">
+			<div id="file-picker-zone" style="margin:20px; color:blue;">
+				<label for="mapping-file-picker">Choose mapping file to load (json)</label>
+				<input name="mapping_file" type="file" accept=".json" id="mapping-file-picker">
+			</div>
+		</div>
+		<script src="../snackbar/js-snackbar.js"></script>
+		<script type="module" src="choose_mapping.js"></script>
+	</body>
+</html>

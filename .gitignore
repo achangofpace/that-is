@@ -1,0 +1,6 @@
+node_modules/
+package-lock.json
+that-is-bundle/
+that-is-bundle.zip
+icons/Thumbs.db
+screenshots/Thumbs.db
