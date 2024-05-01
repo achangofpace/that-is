@@ -1,4 +1,4 @@
-# Custom Ruby
+# That Is
 A browser extension for annotating characters, words, or phrases in a web page
 with definitions, translations, or whatever else you can come up with.
 

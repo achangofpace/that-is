@@ -1,4 +1,4 @@
-# Custom Ruby Contribution Guide
+# That Is Contribution Guide
 Thanks for helping improve this project.
 
 ### Bug reporting
