@@ -6,6 +6,7 @@ export {
   BACKGROUND_ADD_MAPPING,
   BACKGROUND_EDIT_MAPPING,
   BACKGROUND_DELETE_MAPPING,
+  BACKGROUND_RESTORE_DEFAULT_MAPPINGS,
   BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE,
   BACKGROUND_GET_CONSOLIDATED_MAPPING,
   BACKGROUND_GET_SETTINGS,
@@ -25,7 +26,7 @@ const RECIPIENT_BACKGROUND = "RECIPIENT_BACKGROUND";
  * The background script listens to `BACKGROUND_GET_MAPPINGS` messages to
  * retrieve mappings from storage and send them back.
  * #### PAYLOAD:
- * ##### None
+ * None
  * #### RESPONSE:
  * An array of mappings.
  * ##### EXAMPLE:
@@ -182,6 +183,18 @@ const BACKGROUND_DELETE_MAPPING = "BACKGROUND_DELETE_MAPPING";
 
 /**
  * #### DESCRIPTION:
+ * The background script listens to `BACKGROUND_RESTORE_DEFAULT_MAPPINGS`
+ * messages to restore the list of mappings in the database to the original set
+ * of built-in mappings.
+ * #### PAYLOAD:
+ * None
+ * #### RESPONSE:
+ * A Promise indicating whether operation was successful.
+ */
+const BACKGROUND_RESTORE_DEFAULT_MAPPINGS = "BACKGROUND_RESTORE_DEFAULT_MAPPINGS";
+
+/**
+ * #### DESCRIPTION:
  * The background script listens to `BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE`
  * messages to reorder and update selections in a supplied list of mappings
  * (`MAPPINGS_TO_UPDATE_PRIORITY`) to match a supplied update object
@@ -331,7 +344,7 @@ const BACKGROUND_GET_CONSOLIDATED_MAPPING = "BACKGROUND_GET_CONSOLIDATED_MAPPING
  * The background script listens to `BACKGROUND_GET_SETTINGS` messages to
  * retrieve settings from storage and send them back.
  * #### PAYLOAD:
- * ##### None
+ * None
  * #### RESPONSE:
  * A settings object (see database.js for a settings object's typedef).
  * ##### EXAMPLE:
@@ -358,7 +371,7 @@ const BACKGROUND_GET_SETTINGS = "BACKGROUND_GET_SETTINGS";
  *         "EXAMPLE_OPTION_2": true
  *       }
  *     }
- * 
+ *
  * #### RESPONSE:
  * A Promise indicating whether save was successful
  */

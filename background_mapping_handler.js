@@ -17,6 +17,7 @@ import {
 	BACKGROUND_ADD_MAPPING,
 	BACKGROUND_EDIT_MAPPING,
 	BACKGROUND_DELETE_MAPPING,
+	BACKGROUND_RESTORE_DEFAULT_MAPPINGS,
 	BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE,
 	BACKGROUND_GET_CONSOLIDATED_MAPPING,
 	BACKGROUND_GET_SETTINGS,
@@ -129,6 +130,9 @@ function messageListener(message, sender, send_response) {
 			})
 		})
 	}
+	else if (message.command === BACKGROUND_RESTORE_DEFAULT_MAPPINGS) {
+		return restoreDefaultMappings();
+	}
 	else if (message.command === BACKGROUND_GET_CONSOLIDATED_MAPPING) {
 		if (!message.MAPPINGS_TO_CONSOLIDATE) {
 			return Promise.reject(Error("missing `MAPPINGS_TO_CONSOLIDATE`, bad request"));
@@ -197,10 +201,7 @@ function getMappings() {
 	return new Promise((resolve, reject) => {
 		browser.storage.local.get(MAPPINGS)
 		.then((storage_get_result) => {
-			if (storage_get_result[MAPPINGS] && storage_get_result[MAPPINGS].length) {
-				return resolve(storage_get_result[MAPPINGS]);
-			}
-			throw Error('no "mappings" found in storage?');
+			return resolve(storage_get_result[MAPPINGS]);
 		})
 		.catch((storage_get_mappings_err) => {
 			return reject(storage_get_mappings_err);
@@ -285,6 +286,16 @@ function deleteMapping(mapping_name) {
 		.catch((err) => {
 			return reject(err);
 		})
+	});
+}
+
+/**
+ * Overwrite the mappings in the database with the built-in defaults @see database.js
+ * @returns A promise indicating the success or failure of an attempt to rewrite the default mappings to the db
+ */
+function restoreDefaultMappings() {
+	return browser.storage.local.set({
+		[MAPPINGS]: DEFAULT_MAPPINGS
 	});
 }
 
@@ -386,7 +397,7 @@ function consolidateSelectedMappings(mappings) {
 	/*
 	 * mappings should be in the user-set order, which indicates their priority
 	 * thus selected_mappings will also follow this order
-	 * 
+	 *
 	 * iterating over them backwards means that lower priority mappings will be
 	 * added first to the consolidated_mapping and then overwritten by higher priority mappings
 	 */

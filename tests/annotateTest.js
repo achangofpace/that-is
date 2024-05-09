@@ -58,7 +58,9 @@ function rubyWrap(node, regexs, consolidatedMapping) {
 					};
 					content = content.replace(
 						regex,
-						`<ruby data-ie-annotated='${JSON.stringify(annotation_tag)}' style="font-size: 1.5em;">${key}<rp>(</rp><rt style="font-size: 1em">${annotation}&nbsp;</rt><rp>)</rp></ruby>`
+						(match) => {
+							return `<ruby data-ie-annotated='${JSON.stringify(annotation_tag)}' style="font-size: 1.5em;">${key}<rp>(</rp><rt style="font-size: 1em">${annotation}&nbsp;</rt><rp>)</rp></ruby>`;
+						}
 					);
 				}
 			}
@@ -174,7 +176,8 @@ let consolidated_mapping = {
 	'έ': 'epsiolon with tonos',
 	'ρ': 'rho',
 	'ο': 'omicron',  'Ο': "big omicron",
-	'ς': 'sigma (final)'
+	'ς': 'sigma (final)',
+	'r/': 'r$'
 };
 
 let regexMapTest = createRegexMap(consolidated_mapping);

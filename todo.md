@@ -4,16 +4,12 @@ with definitions, translations, or whatever else you can come up with.
 
 ### Todo
 
-- [ ] Prepare for release
-  - [ ] Store page
-    - [ ] Copy
 - [ ] Improve UI visuals
 
 ### Backlog
-- [ ] Port to Chrome (probably nearly there)
+
 - [ ] Add tests
 - [ ] Fix content script imports
-- [ ] Create contribution guide
 - [ ] Make some diagrams
 - [ ] JSON Input field in Create/Edit Mapping Views
 - [ ] Importing and Exporting Mappings
@@ -31,14 +27,17 @@ with definitions, translations, or whatever else you can come up with.
 
 ### In Progress
 
-- [ ] Code Review Changes
+- [ ] Port to Chrome
+- [ ] Create contribution guide
 
 ### Done ✓
 
-- [✓] Completed task
 - [✓] Improve logo / name
 - [✓] Add license
 - [✓] Add readme
 - [✓] Add contributing guidelines
 - [✓] Put on github
 - [✓] Screenshots
+- [✓] Store page
+- [✓] Bug: Remove all mappings and try to create a new one and it fails when it tries to check if you already had a mapping with that name.
+- [✓] Add "Restore Default Mappings" button
