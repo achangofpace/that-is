@@ -8,6 +8,7 @@ with definitions, translations, or whatever else you can come up with.
 
 ### Backlog
 
+- [ ] Set up build process to do dependency injection to handle different versions for different browsers.
 - [ ] Add tests
 - [ ] Fix content script imports
 - [ ] Make some diagrams
@@ -19,7 +20,7 @@ with definitions, translations, or whatever else you can come up with.
 - [ ] Autosave on end drag operations
 - [ ] Enums
 - [ ] Figure out attaching functions to snackbars to undo
-- [ ] Figure a better system for classifying errors
+- [ ] Figure out a better system for classifying errors
 - [ ] Validate mappings
 - [ ] Figure out how to make JSDoc @see tag work in vscode tooltips
 - [ ] Create ways for users to share mappings
@@ -32,6 +33,7 @@ with definitions, translations, or whatever else you can come up with.
 
 ### Done ✓
 
+- [✓] Export logo SVGs to PNG
 - [✓] Improve logo / name
 - [✓] Add license
 - [✓] Add readme
