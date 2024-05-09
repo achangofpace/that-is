@@ -6,6 +6,7 @@ import {
 	BACKGROUND_ADD_MAPPING,
 	BACKGROUND_EDIT_MAPPING,
 	BACKGROUND_DELETE_MAPPING,
+	BACKGROUND_RESTORE_DEFAULT_MAPPINGS,
 	BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE,
 	BACKGROUND_GET_SETTINGS,
 	BACKGROUND_SAVE_SETTINGS,
@@ -68,8 +69,7 @@ function readMappingsFromFile() {
  * @returns {Promise} A promise representing the success or failure of an
  * attempt to annotate the `tabs`.
  */
-function annotate(tabs, mappings) {
-	// call content script to annotate
+function _annotate(tabs, mappings) {
 	return browser.tabs.sendMessage(tabs[0].id, {
 		intended_recipient: RECIPIENT_CONTENT,
 		command: CONTENT_ANNOTATE,
@@ -85,7 +85,7 @@ function annotate(tabs, mappings) {
  * @returns {Promise} A promise representing the success or failure of an
  * attempt to remove all annotations from the `tabs`
  */
-function removeAnnotations(tabs) {
+function _removeAnnotations(tabs) {
 	return browser.tabs.sendMessage(tabs[0].id, {
 		intended_recipient: RECIPIENT_CONTENT,
 		command: CONTENT_REMOVE_ANNOTATIONS
@@ -229,6 +229,19 @@ function _deleteMappingFromDatabase(mapping_name) {
 		intended_recipient: RECIPIENT_BACKGROUND,
 		command: BACKGROUND_DELETE_MAPPING,
 		MAPPING_NAME: mapping_name
+	});
+}
+
+/**
+ * Helper function to call the background script to overwrite the current set of
+ * mappings in the database with the built-in defaults.
+ * @returns {Promise} A Promise indicating the success or failure of the
+ * restoration attempt.
+ */
+function _restoreDefaultMappings() {
+	return browser.runtime.sendMessage({
+		intended_recipient: RECIPIENT_BACKGROUND,
+		command: BACKGROUND_RESTORE_DEFAULT_MAPPINGS
 	});
 }
 
@@ -392,7 +405,7 @@ class SelectMappingsListComponent {
 				list_row_element.remove();
 				new SnackBar({
 					status: "success",
-					message: "Mapping removed successfully",
+					message: `Mapping "${mapping.mapping_name}" removed`,
 					position: "tr",
 					actions: [] // TODO: add an undo option here and increase timer
 				});
@@ -474,87 +487,24 @@ class MappingsSelectionView {
 				<button id="select-mapping-view-annotate-page-button" type="button">Apply Selected Mappings (Annotate Page)</button>
 				<button id="select-mapping-view-remove-annotations-button" type="button">Remove Annotations</button>
 				<button id="select-mapping-view-create-new-mapping-button" type="button">Create New Mapping</button>
+				<button id="select-mapping-view-restore-default-mappings-button" type="button">Restore Default Mappings</button>
 				<button id="select-mapping-view-save-mapping-priority-button" type="button">Save</button>
 			`;
 
 			this.button_container_element.querySelector("#select-mapping-view-annotate-page-button").onclick = () => {
-				let user_update_object = this.getUserMappingsPriorityUpdates();
-				let tabs = browser.tabs.query({ active: true, currentWindow: true });
-				_getMappings()
-				.then((mappings) => {
-					return _applyMappingsPriorityUpdates(user_update_object, mappings);
-				})
-				.then((BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response) => {
-					// if result says we autosaved
-					if (BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response.hasOwnProperty("autosave_success")) {
-						if (BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response.autosave_success) {
-							// display autosave success
-							new SnackBar({
-								status: "success",
-								message: "Mappings selections saved",
-								position: "tr"
-							});
-						} else {
-							// display failure to autosave but still continue chain
-							new SnackBar({
-								status: "error",
-								message: "Mappings selections not saved :(",
-								position: "tr"
-							});
-						}
-					}
-					return Promise.all([
-						Promise.resolve(BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response.updated_mappings),
-						tabs
-					]);
-				})
-				.then(([mappings, tabs]) => {
-					return annotate(tabs, mappings);
-				})
-				.then(() => {
-					new SnackBar({
-						status: "success",
-						message: "Annotated successfully",
-						position: "tr"
-					});
-					console.log("successful annotation");
-				})
-				.catch((err) => {
-					console.error("err in annotate stack");
-					console.error(err);
-					new SnackBar({
-						status: "error",
-						message: "Failed to annotate",
-						position: "tr"
-					});
-					// TODO: disambiguate error
-				});
+				this.annotatePage();
 			};
 
 			this.button_container_element.querySelector("#select-mapping-view-remove-annotations-button").onclick = () => {
-				browser.tabs.query({ active: true, currentWindow: true })
-				.then(removeAnnotations)
-				.then(() => {
-					new SnackBar({
-						status: "success",
-						message: "Annotations removed successfully",
-						position: "tr"
-					});
-				})
-				.catch((remove_annotations_content_err) => {
-					console.log("error while removing annotations");
-					console.error(remove_annotations_content_err)
-					new SnackBar({
-						status: "error",
-						message: "Error occurred while trying to remove annotations",
-						position: "tr"
-					});
-					return remove_annotations_content_err;
-				});
+				this.removeAnnotations();
 			};
 
 			this.button_container_element.querySelector("#select-mapping-view-create-new-mapping-button").onclick = () => {
 				transition_function(VIEW_NAMES.CREATE_NEW_MAPPING_VIEW, {});
+			};
+
+			this.button_container_element.querySelector("#select-mapping-view-restore-default-mappings-button").onclick = () => {
+				this.restoreDefaultMappings(transition_function);
 			};
 
 			this.button_container_element.querySelector("#select-mapping-view-save-mapping-priority-button").onclick = () => {
@@ -580,6 +530,89 @@ class MappingsSelectionView {
 				message: "Big error occurred, try reinstalling. Send a bug report.",
 				position: "tc"
 			});
+		});
+	}
+
+
+	/**
+	 * Annotate the current page with the selected mappings.
+	 */
+	annotatePage() {
+		let user_update_object = this.getUserMappingsPriorityUpdates();
+		let tabs = browser.tabs.query({ active: true, currentWindow: true });
+		_getMappings()
+		.then((mappings) => {
+			return _applyMappingsPriorityUpdates(user_update_object, mappings);
+		})
+		.then((BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response) => {
+			// if result says we autosaved
+			if (BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response.hasOwnProperty("autosave_success")) {
+				if (BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response.autosave_success) {
+					// display autosave success
+					new SnackBar({
+						status: "success",
+						message: "Mappings selections saved",
+						position: "tr"
+					});
+				} else {
+					// display failure to autosave but still continue chain
+					new SnackBar({
+						status: "error",
+						message: "Mappings selections not saved :(",
+						position: "tr"
+					});
+				}
+			}
+			return Promise.all([
+				Promise.resolve(BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response.updated_mappings),
+				tabs
+			]);
+		})
+		.then(([mappings, tabs]) => {
+			return _annotate(tabs, mappings);
+		})
+		.then(() => {
+			new SnackBar({
+				status: "success",
+				message: "Annotated successfully",
+				position: "tr"
+			});
+			console.log("successful annotation");
+		})
+		.catch((err) => {
+			console.error("err in annotate stack: ");
+			console.error(err);
+			new SnackBar({
+				status: "error",
+				message: "Failed to annotate",
+				position: "tr"
+			});
+			// TODO: disambiguate error
+		});
+	}
+
+	/**
+	 * Remove annotations from the current page.
+	 */
+	removeAnnotations() {
+		browser.tabs.query({ active: true, currentWindow: true })
+		.then(_removeAnnotations)
+		.then(() => {
+			new SnackBar({
+				status: "success",
+				message: "Annotations removed successfully",
+				position: "tr"
+			});
+		})
+		.catch((remove_annotations_content_err) => {
+			console.log("error while removing annotations: ");
+			console.error(remove_annotations_content_err)
+			new SnackBar({
+				status: "error",
+				message: "Error occurred while trying to remove annotations",
+				position: "tr"
+			});
+			return remove_annotations_content_err;
 		});
 	}
 
@@ -612,6 +645,40 @@ class MappingsSelectionView {
 	}
 
 	/**
+	 * Call the background script to restore the default mappings in the db
+	 */
+	restoreDefaultMappings(transition_function) {
+		_restoreDefaultMappings()
+		.then(() => {
+			this.mappings_list_component.destroy();
+			Promise.all([
+				_getMappings(),
+				_getSettings()
+			])
+			.then(([mappingsList, settings]) => {
+				this.mappings_list_component = new SelectMappingsListComponent(mappingsList, transition_function);
+				this.view_body_element.prepend(this.mappings_list_component.select_mapping_list_element);
+				new SnackBar({
+					status: "success",
+					message: "Default mappings restored",
+					position: "tr"
+				});
+			})
+			.catch((err) => {
+				throw err;
+			});
+		})
+		.catch((err) => {
+			console.error(err);
+			new SnackBar({
+				status: "error",
+				message: "Failed to restore default mappings",
+				position: "tr"
+			})
+		});
+	}
+
+	/**
 	 * Called only by the save button.
 	 */
 	saveMappingsPriority() {
@@ -632,19 +699,16 @@ class MappingsSelectionView {
 					message: "Mappings selections saved",
 					position: "tr"
 				});
-				resolve();
 			} else {
-				return resolve(
-					browser.runtime.sendMessage({
-						intended_recipient: RECIPIENT_BACKGROUND,
-						command: BACKGROUND_SAVE_MAPPINGS,
-						MAPPINGS_TO_SAVE: BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response.updated_mappings
-					})
-				);
+				return browser.runtime.sendMessage({
+					intended_recipient: RECIPIENT_BACKGROUND,
+					command: BACKGROUND_SAVE_MAPPINGS,
+					MAPPINGS_TO_SAVE: BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response.updated_mappings
+				});
 			}
 		})
 		.catch((err) => {
-			reject(err);
+			throw err;
 		});
 	}
 
@@ -970,7 +1034,7 @@ class EditMappingView {
 		this.button_container_element.setAttribute("class", "button-area");
 		this.button_container_element.innerHTML = `
 			<button id="edit-mapping-add-key-button" type="button">Add Key</button>
-			<button id="edit-mapping-view-show-json-button" type="button">Show JSON</button>
+			<button id="edit-mapping-view-show-json-button" type="button" class="hidden">Show JSON</button>
 			<button id="save-edit-mapping-button" type="submit">Save Mapping Edits</button>
 			<button id="cancel-edit-mapping-button" type="reset">Abandon Mapping Edits</button>
 		`;
