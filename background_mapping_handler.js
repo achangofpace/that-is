@@ -25,7 +25,12 @@ import {
 	BACKGROUND_SAVE_STATE,
 } from './messaging_protocol.js';
 
-export {
+import {
+	Smeagol,
+	SUPPORTED_BROWSERS
+} from './smeagol.js';
+
+export { // for testing
 	applyMappingsPriorityUpdates
 };
 
@@ -48,13 +53,13 @@ browser.runtime.onInstalled.addListener(() => {
  * Handle all messages received by this background script, called whenever a
  * message is sent by any other endpoint using browser.runtime.sendMessage()
  * @param {*} message - Data object sent by message sender
- * @param {*} sender // not used
- * @param {*} sendResponse // not used
  * @returns {Promise<Object>} A promise representing an Object sent as a response to the message
  */
-function messageListener(message, sender, send_response) {
+function messageListener(message) {
 	if (message.intended_recipient !== RECIPIENT_BACKGROUND) {
-		return; // returning nothing does not send a response, allowing other recipients of this message to still respond
+		// returning nothing does not send a response,
+		// allowing other recipients of this message to still respond
+		return;
 	}
 	if (message.command === BACKGROUND_GET_MAPPINGS) {
 		return getMappings();
@@ -79,7 +84,7 @@ function messageListener(message, sender, send_response) {
 			return Promise.reject(Error("missing `EDITED_MAPPING`, bad request"));
 		}
 		if (!(message.MAPPING_NAME === message.EDITED_MAPPING.mapping_name)) {
-			return Promise.reject(Error(`'MAPPING_NAME' (${MAPPING_NAME}) does not match 'EDITED_MAPPING' (${EDITED_MAPPING.mapping_name}), bad request`));
+			return Promise.reject(Error(`'MAPPING_NAME' (${message.MAPPING_NAME}) does not match 'EDITED_MAPPING' (${message.EDITED_MAPPING.mapping_name}), bad request`));
 		}
 		return editMapping(message.MAPPING_NAME, message.EDITED_MAPPING);
 	}
@@ -117,6 +122,8 @@ function messageListener(message, sender, send_response) {
 						});
 					})
 					.catch((saveMappingsErr) => {
+						console.error(saveMappingsErr)
+						// user still gets their updated mappings
 						return resolve({
 							updated_mappings: updated_mappings,
 							autosave_success: false
@@ -128,7 +135,12 @@ function messageListener(message, sender, send_response) {
 					});
 				}
 			})
-		})
+			.catch((err) => {
+				console.error(err);
+				// user still gets their updated mappings
+				resolve({updated_mappings: updated_mappings, autosave_success: false});
+			});
+		});
 	}
 	else if (message.command === BACKGROUND_RESTORE_DEFAULT_MAPPINGS) {
 		return restoreDefaultMappings();
@@ -167,12 +179,8 @@ function messageListener(message, sender, send_response) {
  * This background script will not neccessarily be the intended recipient for
  * all of them.
  */
-browser.runtime.onMessage.addListener(messageListener);
-console.assert(browser.runtime.onMessage.hasListener(messageListener), true);
-
-// browser.runtime.onSuspend.addListener(() => {
-// 	console.log("onSuspend in background.js");
-// });
+let smeagol = new Smeagol(SUPPORTED_BROWSERS.firefox);
+smeagol.addOnMessageListener(messageListener);
 
 /**
  * Load settings from storage, throw err if "SETTINGS" is not found

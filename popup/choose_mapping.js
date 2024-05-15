@@ -21,6 +21,11 @@ import {
 	SETTINGS_AUTOSAVE
 } from '../database.js';
 
+import {
+	Smeagol,
+	SUPPORTED_BROWSERS
+} from '../smeagol.js';
+
 /**
  * Enums for names of Views
  */
@@ -29,6 +34,8 @@ const VIEW_NAMES = Object.freeze({
 	CREATE_MAPPING_VIEW: "CREATE_MAPPING_VIEW",
 	EDIT_MAPPING_VIEW: "EDIT_MAPPING_VIEW"
 });
+
+let smeagol = new Smeagol(SUPPORTED_BROWSERS.firefox);
 
 /**
  * Global variable holding a reference to the current View.
@@ -52,7 +59,7 @@ function readMappingsFromFile() {
 		console.log(curFiles[0]);
 		// parse JSON
 		// add mappings to database
-		browser.runtime.sendMessage({
+		smeagol.sendMessage({
 			"command": "",
 			"update_object": curFiles[0]
 		});
@@ -70,7 +77,7 @@ function readMappingsFromFile() {
  * attempt to annotate the `tabs`.
  */
 function _annotate(tabs, mappings) {
-	return browser.tabs.sendMessage(tabs[0].id, {
+	return smeagol.sendMessageToTab(tabs[0].id, {
 		intended_recipient: RECIPIENT_CONTENT,
 		command: CONTENT_ANNOTATE,
 		MAPPINGS: mappings
@@ -86,7 +93,7 @@ function _annotate(tabs, mappings) {
  * attempt to remove all annotations from the `tabs`
  */
 function _removeAnnotations(tabs) {
-	return browser.tabs.sendMessage(tabs[0].id, {
+	return smeagol.sendMessageToTab(tabs[0].id, {
 		intended_recipient: RECIPIENT_CONTENT,
 		command: CONTENT_REMOVE_ANNOTATIONS
 	});
@@ -194,7 +201,7 @@ function getRowIcons(options) {
  * addition of the new mapping to the database.
  */
 function _addMappingToDatabase(new_mapping) {
-	return browser.runtime.sendMessage({
+	return smeagol.sendMessage({
 		intended_recipient: RECIPIENT_BACKGROUND,
 		command: BACKGROUND_ADD_MAPPING,
 		NEW_MAPPING: new_mapping
@@ -209,7 +216,7 @@ function _addMappingToDatabase(new_mapping) {
  * attempt.
  */
 function _editMappingInDatabase(mapping_name, edited_mapping) {
-	return browser.runtime.sendMessage({
+	return smeagol.sendMessage({
 		intended_recipient: RECIPIENT_BACKGROUND,
 		command: BACKGROUND_EDIT_MAPPING,
 		MAPPING_NAME: mapping_name,
@@ -225,7 +232,7 @@ function _editMappingInDatabase(mapping_name, edited_mapping) {
  * attempt.
  */
 function _deleteMappingFromDatabase(mapping_name) {
-	return browser.runtime.sendMessage({
+	return smeagol.sendMessage({
 		intended_recipient: RECIPIENT_BACKGROUND,
 		command: BACKGROUND_DELETE_MAPPING,
 		MAPPING_NAME: mapping_name
@@ -239,7 +246,7 @@ function _deleteMappingFromDatabase(mapping_name) {
  * restoration attempt.
  */
 function _restoreDefaultMappings() {
-	return browser.runtime.sendMessage({
+	return smeagol.sendMessage({
 		intended_recipient: RECIPIENT_BACKGROUND,
 		command: BACKGROUND_RESTORE_DEFAULT_MAPPINGS
 	});
@@ -264,7 +271,7 @@ function _restoreDefaultMappings() {
  * attempt to create an updated mappings list.
  */
 function _applyMappingsPriorityUpdates(user_update_object, mappings_to_update_priority) {
-	return browser.runtime.sendMessage({
+	return smeagol.sendMessage({
 		intended_recipient: RECIPIENT_BACKGROUND,
 		command: BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE,
 		MAPPINGS_PRIORITY_UPDATE_OBJECT: user_update_object,
@@ -278,7 +285,7 @@ function _applyMappingsPriorityUpdates(user_update_object, mappings_to_update_pr
  * (see database.js for typedef)
  */
 function _getMappings() {
-	return browser.runtime.sendMessage({
+	return smeagol.sendMessage({
 		intended_recipient: RECIPIENT_BACKGROUND,
 		command: BACKGROUND_GET_MAPPINGS
 	});
@@ -289,7 +296,7 @@ function _getMappings() {
  * @returns {Promise<Object>} A settings object (see database.js for typedef)
  */
 function _getSettings() {
-	return browser.runtime.sendMessage({
+	return smeagol.sendMessage({
 		intended_recipient: RECIPIENT_BACKGROUND,
 		command: BACKGROUND_GET_SETTINGS
 	});
@@ -306,6 +313,7 @@ const view_generators = {
 };
 
 /**
+ * A function that popup uses to transition between its different UI views.
  * @callback TransitionFunction
  * @param {*} transitionTo - An enum to indicate which view will be transitioned
  * into from the current view.
@@ -700,7 +708,7 @@ class MappingsSelectionView {
 					position: "tr"
 				});
 			} else {
-				return browser.runtime.sendMessage({
+				return smeagol.sendMessage({
 					intended_recipient: RECIPIENT_BACKGROUND,
 					command: BACKGROUND_SAVE_MAPPINGS,
 					MAPPINGS_TO_SAVE: BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE_response.updated_mappings

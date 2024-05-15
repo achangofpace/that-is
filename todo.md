@@ -5,9 +5,11 @@ with definitions, translations, or whatever else you can come up with.
 ### Todo
 
 - [ ] Improve UI visuals
+- [ ] Add dark themes version of logo
 
 ### Backlog
 
+- [ ] Some regexs will be invalid (content_annotation_handler.js->createRegexMap will fail silently and annotation will not happen)
 - [ ] Set up build process to do dependency injection to handle different versions for different browsers.
 - [ ] Add tests
 - [ ] Fix content script imports
@@ -28,11 +30,12 @@ with definitions, translations, or whatever else you can come up with.
 
 ### In Progress
 
-- [ ] Port to Chrome
+- [ ] Add other APIs to Smeagol
 - [ ] Create contribution guide
 
 ### Done ✓
 
+- [✓] Port to Chrome
 - [✓] Export logo SVGs to PNG
 - [✓] Improve logo / name
 - [✓] Add license
