@@ -1,6 +1,6 @@
-/*** test applyPriorityUpdates() */
+/*** test applyMappingsPriorityUpdates() */
 import {
-	applyPriorityUpdates
+	applyMappingsPriorityUpdates
 } from "../background_mapping_handler.js";
 
 import {
@@ -63,7 +63,7 @@ normal_priority_update_test.expected = all_mappings_after;
 
 // execute test
 console.log(`executing test '${normal_priority_update_test.test_name}'`);
-normal_priority_update_test.actual = applyPriorityUpdates(
+normal_priority_update_test.actual = applyMappingsPriorityUpdates(
 	normal_priority_update_test.modified_mappings_object,
 	normal_priority_update_test.mappings_to_update
 );
