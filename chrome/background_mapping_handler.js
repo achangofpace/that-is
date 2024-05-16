@@ -51,15 +51,13 @@ chrome.runtime.onInstalled.addListener(() => {
 
 /**
  * Handle all messages received by this background script, called whenever a
- * message is sent by any other endpoint using chrome.runtime.sendMessage()
+ * message is sent by any other endpoint using the sendMessage API
  * @param {*} message - Data object sent by message sender
  * @returns {Promise<Object>} A promise representing an Object sent as a response to the message
  */
-function messageListener(message) {
+function backgroundScriptMessageListener(message) {
 	if (message.intended_recipient !== RECIPIENT_BACKGROUND) {
-		// returning nothing does not send a response,
-		// allowing other recipients of this message to still respond
-		return;
+		return Promise.resolve();
 	}
 	if (message.command === BACKGROUND_GET_MAPPINGS) {
 		return getMappings();
@@ -175,12 +173,10 @@ function messageListener(message) {
 }
 
 /* Attach the above function to handle all messages.
- * All messages sent using chrome.runtime.sendMessage() will be detected.
- * This background script will not neccessarily be the intended recipient for
- * all of them.
+ * All messages sent using the browser API `sendMessage` will be detected.
  */
 let smeagol = new Smeagol(SUPPORTED_BROWSERS.chrome);
-smeagol.addOnMessageListener(messageListener);
+smeagol.addOnMessageListener(backgroundScriptMessageListener);
 
 /**
  * Load settings from storage, throw err if "SETTINGS" is not found

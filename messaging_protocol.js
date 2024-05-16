@@ -1,4 +1,4 @@
-// messaging_protocol.js
+/** @module messaging_protocol.js */
 export {
   RECIPIENT_BACKGROUND,
   BACKGROUND_GET_MAPPINGS,
@@ -17,6 +17,26 @@ export {
   CONTENT_REMOVE_ANNOTATIONS
 };
 
+/**
+ * ## Messaging Between Scripts
+ * We can send messages between scripts in the extension to pass around data
+ * and use methods from other modules.
+ *
+ * The API used to pass these messages accepts any serializable object.
+ *
+ * The messages this extension uses include
+ *
+ * #### `intended_recipient`
+ * A name like `RECIPIENT_XXX`
+ * (e.g. `RECIPIENT_BACKGROUND` to indicate the background script).
+ * #### `command`
+ * A name like `{RECIPIENTNAME}_{COMMAND}
+ * (e.g. `CONTENT_ANNOTATE` to tell the content script to annotate the current page).
+ * #### Parameters
+ * a variable number of parameters depending on the `command` used
+ * (e.g. `BACKGROUND_GET_MAPPINGS` takes none, but `BACKGROUND_EDIT_MAPPING`
+ * requires a `MAPPING_NAME` and an `EDITED_MAPPING`).
+ */
 
 // BACKGROUND_SCRIPT_MESSAGES
 const RECIPIENT_BACKGROUND = "RECIPIENT_BACKGROUND";

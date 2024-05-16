@@ -35,5 +35,9 @@
 		"gecko": {
 			"id": "that-is@gdd.com"
 		}
-	}
+	},
+	"web_accessible_resources": [{
+		"matches": ["<all_urls>"],
+		"resources": ["messaging_protocol.js", "smeagol.js"]
+	}]
 }

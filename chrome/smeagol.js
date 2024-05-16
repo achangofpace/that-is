@@ -46,6 +46,7 @@ class Smeagol {
 				resolve(res.getResponse());
 			}).catch(err => {
 				console.error(err);
+				return reject(err);
 			});
 		});
 	}
@@ -68,6 +69,7 @@ class Smeagol {
 				resolve(res.getResponse());
 			}).catch(err => {
 				console.error(err);
+				return reject(err);
 			});
 		});
 	}
@@ -82,11 +84,15 @@ class Smeagol {
 	/**
 	 * Designate a MessageHandler for a script using the appropriate API for
 	 * the browser the extension is installed on.
+	 *
+	 * At the time of writing, one big difference between the browser APIs is
+	 * that Chrome has a bug (see https://crbug.com/1185241) that prevents the
+	 * use of Promises as return values from the MessageHandler.
 	 * See the following browser API documentation
 	 * Firefox - https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage#addlistener_syntax
 	 * Chrome - https://developer.chrome.com/docs/extensions/reference/api/runtime#event-onMessage
-	 * @param {MessageHandler} messageHandler - A function to handle mesages for
-	 * the script that calls this method.
+	 * @param {MessageHandler} messageHandler - A function to handle messages
+	 * for the script that calls this method.
 	 */
 	addOnMessageListener(messageHandler) {
 		/**

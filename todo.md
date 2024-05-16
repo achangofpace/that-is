@@ -10,9 +10,7 @@ with definitions, translations, or whatever else you can come up with.
 ### Backlog
 
 - [ ] Some regexs will be invalid (content_annotation_handler.js->createRegexMap will fail silently and annotation will not happen)
-- [ ] Set up build process to do dependency injection to handle different versions for different browsers.
 - [ ] Add tests
-- [ ] Fix content script imports
 - [ ] Make some diagrams
 - [ ] JSON Input field in Create/Edit Mapping Views
 - [ ] Importing and Exporting Mappings
@@ -35,6 +33,7 @@ with definitions, translations, or whatever else you can come up with.
 
 ### Done ✓
 
+- [✓] Fix content script imports
 - [✓] Port to Chrome
 - [✓] Export logo SVGs to PNG
 - [✓] Improve logo / name
