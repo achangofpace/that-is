@@ -12,8 +12,8 @@
 // };
 
 (async () => {
-	const messaging_protocol_SRC = browser.runtime.getURL("../messaging_protocol.js");
-	const smeagol_SRC = browser.runtime.getURL("../smeagol.js");
+	const messaging_protocol_SRC = browser.runtime.getURL("./messaging_protocol.js");
+	const smeagol_SRC = browser.runtime.getURL("./smeagol.js");
 	try {
 		const {
 			RECIPIENT_BACKGROUND,
@@ -227,18 +227,18 @@
 		}
 
 		function contentScriptMessageListener(message) {
-			// if (message.intended_recipient !== "RECIPIENT_CONTENT") {
-			// 	return;
-			// }
-			if (message.command === "CONTENT_ANNOTATE") {
+			if (message.intended_recipient !== RECIPIENT_CONTENT) {
+				return;
+			}
+			if (message.command === CONTENT_ANNOTATE) {
 				if (!message.MAPPINGS) {
 					return Promise.reject(Error("Bad request (missing `MAPPINGS`)"));
 				}
 				// TODO: allow for partial annotation
 				return new Promise((resolve, reject) => {
 					smeagol.sendMessage({
-						intended_recipient: "RECIPIENT_BACKGROUND",
-						command: "BACKGROUND_GET_CONSOLIDATED_MAPPING",
+						intended_recipient: RECIPIENT_BACKGROUND,
+						command: BACKGROUND_GET_CONSOLIDATED_MAPPING,
 						MAPPINGS_TO_CONSOLIDATE: message.MAPPINGS
 					})
 					.then((BACKGROUND_GET_CONSOLIDATED_MAPPING_response) => {
@@ -251,7 +251,7 @@
 					});
 				})
 			}
-			else if (message.command === "CONTENT_REMOVE_ANNOTATIONS") {
+			else if (message.command === CONTENT_REMOVE_ANNOTATIONS) {
 				try {
 					rubyUnwrap(document.body);
 					return Promise.resolve()

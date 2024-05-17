@@ -34,13 +34,15 @@ export { // for testing
 	applyMappingsPriorityUpdates
 };
 
+let smeagol = new Smeagol(SUPPORTED_BROWSERS.chrome);
+
 /**
  * Runs when extension is installed the first time by the browser,
  * initialize local storage with the default mappings and settings
  */
 chrome.runtime.onInstalled.addListener(() => {
 	console.log("installing, saving default_mappings to local storage");
-	chrome.storage.local.set({
+	smeagol.setInLocalStorage({
 		[MAPPINGS]: DEFAULT_MAPPINGS,
 		[SETTINGS]: DEFAULT_SETTINGS
 	})
@@ -175,7 +177,6 @@ function backgroundScriptMessageListener(message) {
 /* Attach the above function to handle all messages.
  * All messages sent using the browser API `sendMessage` will be detected.
  */
-let smeagol = new Smeagol(SUPPORTED_BROWSERS.chrome);
 smeagol.addOnMessageListener(backgroundScriptMessageListener);
 
 /**
@@ -184,7 +185,7 @@ smeagol.addOnMessageListener(backgroundScriptMessageListener);
  */
 function getSettings() {
 	return new Promise((resolve, reject) => {
-		chrome.storage.local.get([SETTINGS])
+		smeagol.getFromLocalStorage([SETTINGS])
 		.then((storage_get_result) => {
 			if (storage_get_result[SETTINGS]) {
 				return resolve(storage_get_result[SETTINGS]);
@@ -203,7 +204,7 @@ function getSettings() {
  */
 function getMappings() {
 	return new Promise((resolve, reject) => {
-		chrome.storage.local.get(MAPPINGS)
+		smeagol.getFromLocalStorage(MAPPINGS)
 		.then((storage_get_result) => {
 			return resolve(storage_get_result[MAPPINGS]);
 		})
@@ -298,7 +299,7 @@ function deleteMapping(mapping_name) {
  * @returns A promise indicating the success or failure of an attempt to rewrite the default mappings to the db
  */
 function restoreDefaultMappings() {
-	return chrome.storage.local.set({
+	return smeagol.setInLocalStorage({
 		[MAPPINGS]: DEFAULT_MAPPINGS
 	});
 }
@@ -342,7 +343,7 @@ function applyMappingsPriorityUpdates(modified_mappings_from_popup, mappings_to_
  * @returns {Promise} Promise represents an indication of whether save worked
  */
 function saveState(mappings, settings) {
-	return chrome.storage.local.set({
+	return smeagol.setInLocalStorage({
 		[MAPPINGS]: mappings,
 		[SETTINGS]: settings
 	});
@@ -357,7 +358,7 @@ function saveMappings(mappings) {
 	if (!validateMappingsArray(mappings)) {
 		return Promise.reject(Error("invalid mappings array"));
 	}
-	return chrome.storage.local.set({[MAPPINGS]: mappings});
+	return smeagol.setInLocalStorage({[MAPPINGS]: mappings});
 }
 
 function validateMappingsArray(mappings_array) {
@@ -383,7 +384,7 @@ function validateMapping(mapping_object) {
  * @returns {Promise} Promise represents an indication of whether save worked
  */
 function saveSettings(settings) {
-	return chrome.storage.local.set({[SETTINGS]: settings});
+	return smeagol.setInLocalStorage({[SETTINGS]: settings});
 }
 
 /**

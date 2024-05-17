@@ -27,6 +27,14 @@ class Smeagol {
 	}
 
 	/**
+	 * @param {String} A relative path from manifest.json to some resource.
+	 * @returns {String} The URL of some resource.
+	 */
+	getURL(filepath) {
+		return this.browser_api.runtime.getURL(filepath);
+	}
+
+	/**
 	 * Send a message to a content script and get its response.
 	 * Firefox - https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/sendMessage
 	 * Chrome - https://developer.chrome.com/docs/extensions/reference/api/tabs#method-sendMessage
@@ -125,6 +133,22 @@ class Smeagol {
 			return true;
 		}
 		this.browser_api.runtime.onMessage.addListener(wrappedListener);
+	}
+
+	queryTabs(queryInfo) {
+		return this.browser_api.tabs.query(queryInfo);
+	}
+
+	executeScript(details) {
+		return this.browser_api.scripting.executeScript(details);
+	}
+
+	getFromLocalStorage(keys) {
+		return this.browser_api.storage.local.get(keys);
+	}
+
+	setInLocalStorage(keys) {
+		return this.browser_api.storage.local.set(keys);
 	}
 }
 

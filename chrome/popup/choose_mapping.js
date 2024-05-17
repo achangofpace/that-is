@@ -547,7 +547,7 @@ class MappingsSelectionView {
 	 */
 	annotatePage() {
 		let user_update_object = this.getUserMappingsPriorityUpdates();
-		let tabs = chrome.tabs.query({ active: true, currentWindow: true });
+		let tabs = smeagol.queryTabs({ active: true, currentWindow: true });
 		_getMappings()
 		.then((mappings) => {
 			return _applyMappingsPriorityUpdates(user_update_object, mappings);
@@ -603,7 +603,7 @@ class MappingsSelectionView {
 	 * Remove annotations from the current page.
 	 */
 	removeAnnotations() {
-		chrome.tabs.query({ active: true, currentWindow: true })
+		smeagol.queryTabs({ active: true, currentWindow: true })
 		.then(_removeAnnotations)
 		.then(() => {
 			new SnackBar({
@@ -1112,15 +1112,14 @@ mapping_file_picker.addEventListener("change", readMappingsFromFile, false);
  * If we couldn't inject the script, handle the error.
  */
 let active_tab;
-chrome.tabs.query({active: true, currentWindow: true})
+smeagol.queryTabs({active: true, currentWindow: true})
 	.then((activeTab) => {
 		active_tab = activeTab[0];
-		chrome.scripting
-			.executeScript({
-				target: {tabId: active_tab.id},
-				files: ["/content_scripts/content_annotation_handler.js"]
-			})
-			.catch(reportExecuteScriptError);
+		smeagol.executeScript({
+			target: {tabId: active_tab.id},
+			files: ["/content_scripts/content_annotation_handler.js"]
+		})
+		.catch(reportExecuteScriptError);
 	});
 
 
