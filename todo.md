@@ -5,12 +5,12 @@ with definitions, translations, or whatever else you can come up with.
 ### Todo
 
 - [ ] Improve UI visuals
+- [ ] Add dark themes version of logo
 
 ### Backlog
 
-- [ ] Set up build process to do dependency injection to handle different versions for different browsers.
+- [ ] Some regexs will be invalid (content_annotation_handler.js->createRegexMap will fail silently and annotation will not happen)
 - [ ] Add tests
-- [ ] Fix content script imports
 - [ ] Make some diagrams
 - [ ] JSON Input field in Create/Edit Mapping Views
 - [ ] Importing and Exporting Mappings
@@ -28,11 +28,13 @@ with definitions, translations, or whatever else you can come up with.
 
 ### In Progress
 
-- [ ] Port to Chrome
+- [ ] Add other APIs to Smeagol
 - [ ] Create contribution guide
 
 ### Done ✓
 
+- [✓] Fix content script imports
+- [✓] Port to Chrome
 - [✓] Export logo SVGs to PNG
 - [✓] Improve logo / name
 - [✓] Add license

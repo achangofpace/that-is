@@ -29,13 +29,13 @@ import {
 /**
  * Enums for names of Views
  */
-const VIEW_NAMES = Object.freeze({
+const VIEW_NAMES = {
 	MAPPING_SELECT_VIEW: "MAPPING_SELECT_VIEW",
 	CREATE_MAPPING_VIEW: "CREATE_MAPPING_VIEW",
 	EDIT_MAPPING_VIEW: "EDIT_MAPPING_VIEW"
-});
+};
 
-let smeagol = new Smeagol(SUPPORTED_BROWSERS.firefox);
+let smeagol = new Smeagol(SUPPORTED_BROWSERS.chrome);
 
 /**
  * Global variable holding a reference to the current View.
