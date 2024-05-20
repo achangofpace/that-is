@@ -17,6 +17,7 @@ import {
 	BACKGROUND_ADD_MAPPING,
 	BACKGROUND_EDIT_MAPPING,
 	BACKGROUND_DELETE_MAPPING,
+	BACKGROUND_RESTORE_DEFAULT_MAPPINGS,
 	BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE,
 	BACKGROUND_GET_CONSOLIDATED_MAPPING,
 	BACKGROUND_GET_SETTINGS,
@@ -24,9 +25,16 @@ import {
 	BACKGROUND_SAVE_STATE,
 } from './messaging_protocol.js';
 
-export {
+import {
+	Smeagol,
+	SUPPORTED_BROWSERS
+} from './smeagol.js';
+
+export { // for testing
 	applyMappingsPriorityUpdates
 };
+
+let smeagol = new Smeagol(SUPPORTED_BROWSERS.firefox);
 
 /**
  * Runs when extension is installed the first time by the browser,
@@ -34,7 +42,7 @@ export {
  */
 browser.runtime.onInstalled.addListener(() => {
 	console.log("installing, saving default_mappings to local storage");
-	browser.storage.local.set({
+	smeagol.setInLocalStorage({
 		[MAPPINGS]: DEFAULT_MAPPINGS,
 		[SETTINGS]: DEFAULT_SETTINGS
 	})
@@ -45,15 +53,13 @@ browser.runtime.onInstalled.addListener(() => {
 
 /**
  * Handle all messages received by this background script, called whenever a
- * message is sent by any other endpoint using browser.runtime.sendMessage()
+ * message is sent by any other endpoint using the sendMessage API
  * @param {*} message - Data object sent by message sender
- * @param {*} sender // not used
- * @param {*} sendResponse // not used
  * @returns {Promise<Object>} A promise representing an Object sent as a response to the message
  */
-function messageListener(message, sender, send_response) {
+function backgroundScriptMessageListener(message) {
 	if (message.intended_recipient !== RECIPIENT_BACKGROUND) {
-		return; // returning nothing does not send a response, allowing other recipients of this message to still respond
+		return Promise.resolve();
 	}
 	if (message.command === BACKGROUND_GET_MAPPINGS) {
 		return getMappings();
@@ -78,7 +84,7 @@ function messageListener(message, sender, send_response) {
 			return Promise.reject(Error("missing `EDITED_MAPPING`, bad request"));
 		}
 		if (!(message.MAPPING_NAME === message.EDITED_MAPPING.mapping_name)) {
-			return Promise.reject(Error(`'MAPPING_NAME' (${MAPPING_NAME}) does not match 'EDITED_MAPPING' (${EDITED_MAPPING.mapping_name}), bad request`));
+			return Promise.reject(Error(`'MAPPING_NAME' (${message.MAPPING_NAME}) does not match 'EDITED_MAPPING' (${message.EDITED_MAPPING.mapping_name}), bad request`));
 		}
 		return editMapping(message.MAPPING_NAME, message.EDITED_MAPPING);
 	}
@@ -116,6 +122,8 @@ function messageListener(message, sender, send_response) {
 						});
 					})
 					.catch((saveMappingsErr) => {
+						console.error(saveMappingsErr)
+						// user still gets their updated mappings
 						return resolve({
 							updated_mappings: updated_mappings,
 							autosave_success: false
@@ -127,7 +135,15 @@ function messageListener(message, sender, send_response) {
 					});
 				}
 			})
-		})
+			.catch((err) => {
+				console.error(err);
+				// user still gets their updated mappings
+				resolve({updated_mappings: updated_mappings, autosave_success: false});
+			});
+		});
+	}
+	else if (message.command === BACKGROUND_RESTORE_DEFAULT_MAPPINGS) {
+		return restoreDefaultMappings();
 	}
 	else if (message.command === BACKGROUND_GET_CONSOLIDATED_MAPPING) {
 		if (!message.MAPPINGS_TO_CONSOLIDATE) {
@@ -159,16 +175,9 @@ function messageListener(message, sender, send_response) {
 }
 
 /* Attach the above function to handle all messages.
- * All messages sent using browser.runtime.sendMessage() will be detected.
- * This background script will not neccessarily be the intended recipient for
- * all of them.
+ * All messages sent using the browser API `sendMessage` will be detected.
  */
-browser.runtime.onMessage.addListener(messageListener);
-console.assert(browser.runtime.onMessage.hasListener(messageListener), true);
-
-// browser.runtime.onSuspend.addListener(() => {
-// 	console.log("onSuspend in background.js");
-// });
+smeagol.addOnMessageListener(backgroundScriptMessageListener);
 
 /**
  * Load settings from storage, throw err if "SETTINGS" is not found
@@ -176,7 +185,7 @@ console.assert(browser.runtime.onMessage.hasListener(messageListener), true);
  */
 function getSettings() {
 	return new Promise((resolve, reject) => {
-		browser.storage.local.get([SETTINGS])
+		smeagol.getFromLocalStorage([SETTINGS])
 		.then((storage_get_result) => {
 			if (storage_get_result[SETTINGS]) {
 				return resolve(storage_get_result[SETTINGS]);
@@ -195,12 +204,9 @@ function getSettings() {
  */
 function getMappings() {
 	return new Promise((resolve, reject) => {
-		browser.storage.local.get(MAPPINGS)
+		smeagol.getFromLocalStorage(MAPPINGS)
 		.then((storage_get_result) => {
-			if (storage_get_result[MAPPINGS] && storage_get_result[MAPPINGS].length) {
-				return resolve(storage_get_result[MAPPINGS]);
-			}
-			throw Error('no "mappings" found in storage?');
+			return resolve(storage_get_result[MAPPINGS]);
 		})
 		.catch((storage_get_mappings_err) => {
 			return reject(storage_get_mappings_err);
@@ -289,6 +295,16 @@ function deleteMapping(mapping_name) {
 }
 
 /**
+ * Overwrite the mappings in the database with the built-in defaults @see database.js
+ * @returns A promise indicating the success or failure of an attempt to rewrite the default mappings to the db
+ */
+function restoreDefaultMappings() {
+	return smeagol.setInLocalStorage({
+		[MAPPINGS]: DEFAULT_MAPPINGS
+	});
+}
+
+/**
  * Apply priority updates to an array of mappings
  * @param {Object[]} modified_mappings_from_popup Array of objects like
  * 	[
@@ -327,7 +343,7 @@ function applyMappingsPriorityUpdates(modified_mappings_from_popup, mappings_to_
  * @returns {Promise} Promise represents an indication of whether save worked
  */
 function saveState(mappings, settings) {
-	return browser.storage.local.set({
+	return smeagol.setInLocalStorage({
 		[MAPPINGS]: mappings,
 		[SETTINGS]: settings
 	});
@@ -342,7 +358,7 @@ function saveMappings(mappings) {
 	if (!validateMappingsArray(mappings)) {
 		return Promise.reject(Error("invalid mappings array"));
 	}
-	return browser.storage.local.set({[MAPPINGS]: mappings});
+	return smeagol.setInLocalStorage({[MAPPINGS]: mappings});
 }
 
 function validateMappingsArray(mappings_array) {
@@ -368,7 +384,7 @@ function validateMapping(mapping_object) {
  * @returns {Promise} Promise represents an indication of whether save worked
  */
 function saveSettings(settings) {
-	return browser.storage.local.set({[SETTINGS]: settings});
+	return smeagol.setInLocalStorage({[SETTINGS]: settings});
 }
 
 /**
@@ -386,7 +402,7 @@ function consolidateSelectedMappings(mappings) {
 	/*
 	 * mappings should be in the user-set order, which indicates their priority
 	 * thus selected_mappings will also follow this order
-	 * 
+	 *
 	 * iterating over them backwards means that lower priority mappings will be
 	 * added first to the consolidated_mapping and then overwritten by higher priority mappings
 	 */

@@ -194,10 +194,10 @@ const ROMAJI_TO_KATAKANA = {
 //   な ナ na	に ニ ni	ぬ ヌ nu	ね ネ ne	の ノ no	にゃ ニャ nya	にゅ ニュ nyu	にょ ニョ nyo
 //   は ハ ha	ひ ヒ hi	ふ フ fu	へ ヘ he	ほ ホ ho	ひゃ ヒャ hya	ひゅ ヒュ hyu	ひょ ヒョ hyo
 //   ま マ ma	み ミ mi	む ム mu	め メ me	も モ mo	みゃ ミャ mya	みゅ ミュ myu	みょ ミョ myo
-//   や ヤ ya		ゆ ユ yu		よ ヨ yo	
+//   や ヤ ya		ゆ ユ yu		よ ヨ yo
 //   ら ラ ra	り リ ri	る ル ru	れ レ re	ろ ロ ro	りゃ リャ rya	りゅ リュ ryu	りょ リョ ryo
-//   わ ワ wa	ゐ ヰ wi †		ゑ ヱ we †	を ヲ wo ‡	
-//   ん ン n /n'	
+//   わ ワ wa	ゐ ヰ wi †		ゑ ヱ we †	を ヲ wo ‡
+//   ん ン n /n'
 //   が ガ ga	ぎ ギ gi	ぐ グ gu	げ ゲ ge	ご ゴ go	ぎゃ ギャ gya	ぎゅ ギュ gyu	ぎょ ギョ gyo
 //   ざ ザ za	じ ジ ji	ず ズ zu	ぜ ゼ ze	ぞ ゾ zo	じゃ ジャ ja	じゅ ジュ ju	じょ ジョ jo
 //   だ ダ da	ぢ ヂ ji	づ ヅ zu	で デ de	ど ド do	ぢゃ ヂャ ja	ぢゅ ヂュ ju	ぢょ ヂョ jo
@@ -563,7 +563,7 @@ const HANGGUL_TO_ROMAJA = {
 
 /* eslint-enable */
 
-/**
+/***
  * the database is a key-value store that stores two types of objects:
  * 'mappings'
  * and
@@ -576,7 +576,7 @@ const HANGGUL_TO_ROMAJA = {
  * An array of Objects representing mappings of key strings to search for in web
  * pages (can be single characters or multiple characters or multiple words) and
  * corresponding strings to display above those keys as ruby annotations.
- * 
+ *
  * Users can create their own mappings or use the provided defaults.
  * ##### `mapping_name`
  * {String} Serves as both a display name and an ID.
@@ -589,15 +589,15 @@ const HANGGUL_TO_ROMAJA = {
  * regex it uses.
  * ##### `mapping`
  * {Object} The container with the actual key\<String>-annotation\<String> pairs.
- * 
+ *
  * Keys are not limited to one character.
- * 
+ *
  * Keys should be unique to each mapping, but they are not required to not overlap
  * between mappings.
- * 
+ *
  * If conflicts between selected mappings appear, they'll be resolved based on
  * their priority (their relative position in the array).
- * 
+ *
  * Annotations should be kept short, ideally around the same length as the keys.
  * ##### `selected`
  * {Boolean} Whether or not this mapping is selected for annotation.

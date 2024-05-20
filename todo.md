@@ -4,16 +4,14 @@ with definitions, translations, or whatever else you can come up with.
 
 ### Todo
 
-- [ ] Prepare for release
-  - [ ] Store page
-    - [ ] Copy
 - [ ] Improve UI visuals
+- [ ] Add dark themes version of logo
 
 ### Backlog
-- [ ] Port to Chrome (probably nearly there)
+
+- [ ] Some regexs will be invalid (content_annotation_handler.js->createRegexMap will fail silently and annotation will not happen)
+- [ ] Export functions to be used in tests
 - [ ] Add tests
-- [ ] Fix content script imports
-- [ ] Create contribution guide
 - [ ] Make some diagrams
 - [ ] JSON Input field in Create/Edit Mapping Views
 - [ ] Importing and Exporting Mappings
@@ -23,7 +21,7 @@ with definitions, translations, or whatever else you can come up with.
 - [ ] Autosave on end drag operations
 - [ ] Enums
 - [ ] Figure out attaching functions to snackbars to undo
-- [ ] Figure a better system for classifying errors
+- [ ] Figure out a better system for classifying errors
 - [ ] Validate mappings
 - [ ] Figure out how to make JSDoc @see tag work in vscode tooltips
 - [ ] Create ways for users to share mappings
@@ -31,14 +29,20 @@ with definitions, translations, or whatever else you can come up with.
 
 ### In Progress
 
-- [ ] Code Review Changes
+- [ ] Add other APIs to Smeagol
+- [ ] Create contribution guide
 
 ### Done ✓
 
-- [✓] Completed task
+- [✓] Figure out content script imports
+- [✓] Port to Chrome
+- [✓] Export logo SVGs to PNG
 - [✓] Improve logo / name
 - [✓] Add license
 - [✓] Add readme
 - [✓] Add contributing guidelines
 - [✓] Put on github
 - [✓] Screenshots
+- [✓] Store page
+- [✓] Bug: Remove all mappings and try to create a new one and it fails when it tries to check if you already had a mapping with that name.
+- [✓] Add "Restore Default Mappings" button

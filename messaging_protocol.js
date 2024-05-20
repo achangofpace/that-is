@@ -1,4 +1,4 @@
-// messaging_protocol.js
+/** @module messaging_protocol.js */
 export {
   RECIPIENT_BACKGROUND,
   BACKGROUND_GET_MAPPINGS,
@@ -6,6 +6,7 @@ export {
   BACKGROUND_ADD_MAPPING,
   BACKGROUND_EDIT_MAPPING,
   BACKGROUND_DELETE_MAPPING,
+  BACKGROUND_RESTORE_DEFAULT_MAPPINGS,
   BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE,
   BACKGROUND_GET_CONSOLIDATED_MAPPING,
   BACKGROUND_GET_SETTINGS,
@@ -16,6 +17,26 @@ export {
   CONTENT_REMOVE_ANNOTATIONS
 };
 
+/**
+ * ## Messaging Between Scripts
+ * We can send messages between scripts in the extension to pass around data
+ * and use methods from other modules.
+ *
+ * The API used to pass these messages accepts any serializable object.
+ *
+ * The messages this extension uses include
+ *
+ * #### `intended_recipient`
+ * A name like `RECIPIENT_XXX`
+ * (e.g. `RECIPIENT_BACKGROUND` to indicate the background script).
+ * #### `command`
+ * A name like `{RECIPIENTNAME}_{COMMAND}
+ * (e.g. `CONTENT_ANNOTATE` to tell the content script to annotate the current page).
+ * #### Parameters
+ * a variable number of parameters depending on the `command` used
+ * (e.g. `BACKGROUND_GET_MAPPINGS` takes none, but `BACKGROUND_EDIT_MAPPING`
+ * requires a `MAPPING_NAME` and an `EDITED_MAPPING`).
+ */
 
 // BACKGROUND_SCRIPT_MESSAGES
 const RECIPIENT_BACKGROUND = "RECIPIENT_BACKGROUND";
@@ -25,7 +46,7 @@ const RECIPIENT_BACKGROUND = "RECIPIENT_BACKGROUND";
  * The background script listens to `BACKGROUND_GET_MAPPINGS` messages to
  * retrieve mappings from storage and send them back.
  * #### PAYLOAD:
- * ##### None
+ * None
  * #### RESPONSE:
  * An array of mappings.
  * ##### EXAMPLE:
@@ -182,6 +203,18 @@ const BACKGROUND_DELETE_MAPPING = "BACKGROUND_DELETE_MAPPING";
 
 /**
  * #### DESCRIPTION:
+ * The background script listens to `BACKGROUND_RESTORE_DEFAULT_MAPPINGS`
+ * messages to restore the list of mappings in the database to the original set
+ * of built-in mappings.
+ * #### PAYLOAD:
+ * None
+ * #### RESPONSE:
+ * A Promise indicating whether operation was successful.
+ */
+const BACKGROUND_RESTORE_DEFAULT_MAPPINGS = "BACKGROUND_RESTORE_DEFAULT_MAPPINGS";
+
+/**
+ * #### DESCRIPTION:
  * The background script listens to `BACKGROUND_APPLY_MAPPINGS_PRIORITY_UPDATE`
  * messages to reorder and update selections in a supplied list of mappings
  * (`MAPPINGS_TO_UPDATE_PRIORITY`) to match a supplied update object
@@ -331,7 +364,7 @@ const BACKGROUND_GET_CONSOLIDATED_MAPPING = "BACKGROUND_GET_CONSOLIDATED_MAPPING
  * The background script listens to `BACKGROUND_GET_SETTINGS` messages to
  * retrieve settings from storage and send them back.
  * #### PAYLOAD:
- * ##### None
+ * None
  * #### RESPONSE:
  * A settings object (see database.js for a settings object's typedef).
  * ##### EXAMPLE:
@@ -358,7 +391,7 @@ const BACKGROUND_GET_SETTINGS = "BACKGROUND_GET_SETTINGS";
  *         "EXAMPLE_OPTION_2": true
  *       }
  *     }
- * 
+ *
  * #### RESPONSE:
  * A Promise indicating whether save was successful
  */

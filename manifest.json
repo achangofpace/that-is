@@ -5,16 +5,25 @@
 	"description": "Insert ruby-text above text on webpages based on user-created mappings.",
 	"homepage_url": "https://github.com/achangofpace/that-is",
 	"icons": {
-		"48": "icons/custom_ruby_map.svg"
+		"16": "icons/custom_ruby_map_16.png",
+		"32": "icons/custom_ruby_map_32.png",
+		"48": "icons/custom_ruby_map_48.png",
+		"64": "icons/custom_ruby_map_64.png",
+		"128": "icons/custom_ruby_map_128.png"
 	},
 	"permissions": [
 		"activeTab",
-		"downloads",
 		"scripting",
 		"storage"
 	],
 	"action": {
-		"default_icon": "icons/custom_ruby_map.svg",
+		"default_icon": {
+			"16": "icons/custom_ruby_map_16.png",
+			"32": "icons/custom_ruby_map_32.png",
+			"48": "icons/custom_ruby_map_48.png",
+			"64": "icons/custom_ruby_map_64.png",
+			"128": "icons/custom_ruby_map_128.png"
+		},
 		"default_title": "That Is",
 		"default_popup": "popup/choose_mapping.html"
 	},
@@ -26,5 +35,9 @@
 		"gecko": {
 			"id": "that-is@gdd.com"
 		}
-	}
+	},
+	"web_accessible_resources": [{
+		"matches": ["<all_urls>"],
+		"resources": ["messaging_protocol.js", "smeagol.js"]
+	}]
 }
