@@ -228,7 +228,7 @@
 
 		function contentScriptMessageListener(message) {
 			if (message.intended_recipient !== RECIPIENT_CONTENT) {
-				return;
+				return Promise.resolve();
 			}
 			if (message.command === CONTENT_ANNOTATE) {
 				if (!message.MAPPINGS) {
@@ -254,7 +254,7 @@
 			else if (message.command === CONTENT_REMOVE_ANNOTATIONS) {
 				try {
 					rubyUnwrap(document.body);
-					return Promise.resolve()
+					return Promise.resolve({});
 				}
 				catch (err) {
 					return Promise.reject(err);
