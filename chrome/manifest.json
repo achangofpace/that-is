@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "That Is",
-	"version": "1.0",
+	"version": "1.1",
 	"description": "Insert ruby-text above text on webpages based on user-created mappings.",
 	"homepage_url": "https://github.com/achangofpace/that-is",
 	"icons": {
