@@ -1,5 +1,5 @@
 node_modules/
 package-lock.json
-that-is-bundle/
-that-is-bundle.zip
+that-is-bundle*/
+that-is-bundle*.zip
 */Thumbs.db
