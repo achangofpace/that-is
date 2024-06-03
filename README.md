@@ -30,6 +30,8 @@ Use one of the built-in default mappings and edit it to fit your needs.
 - Greek alphabet to English pronunciation guide
 - ... more to come
 
+Available on [Mozilla Firefox](https://addons.mozilla.org/en-US/firefox/addon/that-is/) and [Google Chrome](https://chromewebstore.google.com/detail/that-is/kpfogaicnplnhahgcmjadkammdfmmdfm).
+
 ## Installation
 - Firefox
     - navigate to <a>about:debugging#/runtime/this-firefox</a> and click "Load Temporary Add-on..." and select the manifest.json from this project.
