@@ -34,15 +34,15 @@ with definitions, translations, or whatever else you can come up with.
 
 ### Done ✓
 
-- [✓] Figure out content script imports
-- [✓] Port to Chrome
-- [✓] Export logo SVGs to PNG
-- [✓] Improve logo / name
-- [✓] Add license
-- [✓] Add readme
-- [✓] Add contributing guidelines
-- [✓] Put on github
-- [✓] Screenshots
-- [✓] Store page
-- [✓] Bug: Remove all mappings and try to create a new one and it fails when it tries to check if you already had a mapping with that name.
-- [✓] Add "Restore Default Mappings" button
+- [x] Figure out content script imports
+- [x] Port to Chrome
+- [x] Export logo SVGs to PNG
+- [x] Improve logo / name
+- [x] Add license
+- [x] Add readme
+- [x] Add contributing guidelines
+- [x] Put on github
+- [x] Screenshots
+- [x] Store page
+- [x] Bug: Remove all mappings and try to create a new one and it fails when it tries to check if you already had a mapping with that name.
+- [x] Add "Restore Default Mappings" button
